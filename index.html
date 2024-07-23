@@ -32,25 +32,16 @@
         <button type="submit">Transfer File</button>
     </form>
     <div id="result"></div>
-
-    <script>
-    console.log('Script started');
+<script>
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOMContentLoaded event fired');
         const form = document.getElementById('transferForm');
-        console.log('Form element:', form);
+        const result = document.getElementById('result');
 
         if (form) {
-            console.log('Adding event listener to form');
             form.addEventListener('submit', async (e) => {
-                console.log('Form submitted');
                 e.preventDefault();
                 const dropboxPath = document.getElementById('dropboxPath').value;
                 const driveFolderId = document.getElementById('driveFolderId').value;
-                const result = document.getElementById('result');
-
-                console.log('Dropbox path:', dropboxPath);
-                console.log('Drive folder ID:', driveFolderId);
 
                 result.textContent = 'Transferring file...';
 
@@ -63,19 +54,26 @@
                         body: JSON.stringify({ dropbox_path: dropboxPath, drive_folder_id: driveFolderId })
                     });
 
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
                     const data = await response.json();
-                    console.log('Response data:', data);
                     result.textContent = `Transfer result: ${JSON.stringify(data)}`;
                 } catch (error) {
                     console.error('Fetch error:', error);
                     result.textContent = `Error: ${error.message}`;
+
+                    // Additional error logging
+                    if (error instanceof TypeError && error.message === 'Failed to fetch') {
+                        console.log('This might be a CORS issue. Check the Cloud Run CORS configuration.');
+                    }
                 }
             });
         } else {
             console.error('Form element not found');
         }
     });
-    console.log('Script ended');
-    </script>
+</script>
 </body>
 </html>
