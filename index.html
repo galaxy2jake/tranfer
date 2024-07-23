@@ -13,8 +13,7 @@ document.getElementById('transferForm').addEventListener('submit', async (e) => 
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ dropbox_path: dropboxPath, drive_folder_id: driveFolderId }),
-            credentials: 'include'
+            body: JSON.stringify({ dropbox_path: dropboxPath, drive_folder_id: driveFolderId })
         });
 
         const data = await response.json();
