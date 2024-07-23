@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropbox to Google Drive Transfer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dropbox to Google Drive Transfer</h1>
+    <form id="transferForm">
+        <input type="text" id="dropboxPath" placeholder="Dropbox file path" required>
+        <input type="text" id="driveFolderId" placeholder="Google Drive folder ID" required>
+        <button type="submit">Transfer File</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('transferForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const dropboxPath = document.getElementById('dropboxPath').value;
+            const driveFolderId = document.getElementById('driveFolderId').value;
+            const result = document.getElementById('result');
+
+            result.textContent = 'Transferring file...';
+
+            try {
+                const response = await fetch('https://dropbox-gdrive-transfer-pse4fil5ha-uc.a.run.app', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ dropbox_path: dropboxPath, drive_folder_id: driveFolderId }),
+                });
+
+                const data = await response.json();
+                result.textContent = `Transfer result: ${JSON.stringify(data)}`;
+            } catch (error) {
+                result.textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>
